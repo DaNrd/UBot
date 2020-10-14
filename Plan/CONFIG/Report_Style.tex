@@ -1,0 +1,16 @@
+%Header and footer style
+%\fancyhead[RE,RO]{\textcolor{red}{BioLogic - Confidentiel}}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[RO,LE]{\docSubject}
+\fancyfoot{}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[LO,CE]{Chapitre \thechapter}
+\fancyfoot[CO,RE]{}
+
+%Chapter style
+\newcommand{\hsp}{\hspace{20pt}}
+\titleformat{\chapter}[hang]{\Huge\bfseries}
+{\thechapter\hsp\textcolor{red}{|}\hsp}{0pt}{\Huge\bfseries}
+
+\titlespacing{\chapter}{0pt}{5mm}{0.5cm}

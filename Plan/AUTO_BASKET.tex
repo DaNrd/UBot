@@ -1,0 +1,51 @@
+\documentclass[12pt]{report}
+%include package
+\input{CONFIG/Packages}
+
+%set graphic path
+\graphicspath{ {IMGs/} }
+
+%set report style
+\input{CONFIG/Report_Style}
+
+%load personnal commands
+%\input{Config/NEWcmd}
+
+
+%Title and authors definition
+\newcommand{\titre}{Project plan}
+\newcommand{\matiere}{ELEC-C9801-DTEP}
+\newcommand{\authorName}{Alexandre}
+\newcommand{\authorFamName}{ Bouziane-Khodja}
+\newcommand{\authorFullName}{\textbf{Bouziane-Khodja Alexandre}}
+\newcommand{\authorFullNametwo}{\textbf{Boissiere Gregory}}
+\newcommand{\authorFullNamethree}{\textbf{Campbell Aaron}}
+\newcommand{\auteursline}{}
+\newcommand{\sex}{Mr.}%Mr. or Mrs.
+\newcommand{\prof}{}
+\newcommand{\versionControl}{1.0}%Keep this part up to date for better traking
+
+%\makenoidxglossaries
+%\input{GLOSSARY/glossary.tex}
+\addbibresource{BIBLIO/BIBLIO.bib}
+ 
+%Content
+\begin{document}
+
+    \input{CHAPTERS/TITLE}
+    %\printnoidxglossaries
+    \tableofcontents
+    %\listoffigures
+    
+    
+    %\begin{abstract}
+    %    \input{CHAPTERS/}
+    %\end{abstract}       
+	
+	\chapter{U-Bot}
+	\input{CHAPTERS/PROJECT_GOAL}
+	
+	%\printbibliography
+\end{document}
+
+
