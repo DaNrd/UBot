@@ -6,17 +6,17 @@ Code for UBot
 /*
 Pin Assignments
 */
-const byte MOTOR_L_POSITIVE_PIN = 1;
-const byte MOTOR_L_NEGATIVE_PIN = 1;
-const byte MOTOR_L_PWM_PIN = 1;
-const byte MOTOR_R_POSITIVE_PIN = 1;
-const byte MOTOR_R_NEGATIVE_PIN = 1;
-const byte MOTOR_R_PWM_PIN = 1;
+const byte MOTOR_L_POSITIVE_PIN = 2; // TODO: assign correct pin
+const byte MOTOR_L_NEGATIVE_PIN = 3; // TODO: assign correct pin
+const byte MOTOR_L_PWM_PIN = 4; // TODO: assign correct pin
+const byte MOTOR_R_POSITIVE_PIN = 5; // TODO: assign correct pin
+const byte MOTOR_R_NEGATIVE_PIN = 6; // TODO: assign correct pin
+const byte MOTOR_R_PWM_PIN = 7; // TODO: assign correct pin
 
 /*
 Constants
 */
-const int timeUnit = 1800000; //time in ms
+const int timeUnit = 30*60000; // min*(ms/min) = ms (currently 30min)
 
 /*
 Global Variables
@@ -39,14 +39,12 @@ void setup() {
   // set initial motor direction to 'positive'
   digitalWrite(MOTOR_L_POSITIVE_PIN,HIGH);
   digitalWrite(MOTOR_L_NEGATIVE_PIN,LOW);
-  digitalWrite(MOTOR_R_POSITIVE_PIN,HIGH);
+  digitalWrite(MOTOR_R_POSITIVE_PIN,LOW);
   digitalWrite(MOTOR_R_NEGATIVE_PIN,LOW);
 
-  //testing functions
-  motor('R',5);
-  motor('R',-80);
-  motor('L',34);
-  motor('M',50);
+  // testing functions
+  motor('R',9);
+  motor('L',9);
 }
 
 void loop() {
