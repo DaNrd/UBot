@@ -60,7 +60,7 @@ void motor(char side, float value) {
       digitalWrite(MOTOR_R_POSITIVE_PIN,LOW);
       digitalWrite(MOTOR_R_NEGATIVE_PIN,HIGH);
     }
-    digitalWrite(MOTOR_R_PWM_PIN,pwmOutput);
+    analogWrite(MOTOR_R_PWM_PIN,pwmOutput);
     Serial.print("MOTOR_R = ");
     Serial.println(pwmOutput);
   } else if(side == 'L'){
@@ -71,9 +71,9 @@ void motor(char side, float value) {
       digitalWrite(MOTOR_L_POSITIVE_PIN,LOW);
       digitalWrite(MOTOR_L_NEGATIVE_PIN,HIGH);
     }
-    Serial.print("MOTOR_R = ");
+    analogWrite(MOTOR_L_PWM_PIN,pwmOutput);
+    Serial.print("MOTOR_L = ");
     Serial.println(pwmOutput);
-    digitalWrite(MOTOR_L_PWM_PIN,pwmOutput);
   } else {
     Serial.println("/*ERROR*/  Function motor() invalid char: side");
     Serial.print("/*ERROR*/  Expected: \'L\'' or \'R\', received: \'");
