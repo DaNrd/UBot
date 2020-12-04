@@ -104,116 +104,159 @@ int getStrength(int points) {
 
 void loop()
 {
-  static unsigned long lastReadMillis = 0;
-
-  // request data from slaves every 1000 ms
-  if (millis() - lastReadMillis > requestInterval) {
-
-    int masterStrength = 0;
-    int slave1Val = 0;
-    int slave2Val = 0;
-
-    // In each loop, make sure there is an Internet connection.
-    if (WiFi.status() == WL_CONNECTED) {
-
-
-
-      // optional: set delay in milliseconds between retry attempts.
-      // the default value is 10 ms
-      slaveReq1.setRetryDelay(5);
-      slaveReq2.setRetryDelay(5);
-
-      // attempts to read a packet from the ESP32 slaves
-      bool success1 = slaveReq1.request();
-      bool success2 = slaveReq2.request();
-
-      // print the success of the previous step (for debugging, can be removed later)
-      Serial.print(success1);
-      Serial.print(success2);
-
-
-      if (success1) {
-
-        /*
-           loop through all but the last byte
-           receive each byte as a character
-           print the character
-        */
-        while (slaveReq1.available() > 1) {
-
-          char c = slaveReq1.read();
-          Serial.print(c);
-
-        }
-
-        // receive the byte as an integer
-        slave1Val = slaveReq1.read();
-
-        // print the strength of slave 1's wifi connection
-        Serial.print("Slave1: ");
-        Serial.print(slave1Val);
-
-      } else {
-
-        // notify if connection was not available
-        Serial.println("slave1 not found");
-
-      }
-
-      if (success2) {
-
-        /*
-           loop through all but the last byte
-           receive each byte as a character
-           print the character
-        */
-        while (1 < slaveReq2.available()) {
-
-          char c = slaveReq2.read();
-          Serial.print(c);
-
-        }
-
-        // receive the byte as an integer
-        slave2Val = slaveReq2.read();
-
-        // print the strength of slave 2's wifi connection
-        Serial.print("Slave2: ");
-        Serial.print(slave2Val);
-
-      } else {
-
-        // notify if connection was not available
-        Serial.println("slave2 not found");
-
-      }
-
-      // print the strength of the master's wifi connection
-      Serial.print("Master: ");
-      masterStrength = getStrength(7);
-      Serial.println(masterStrength);
-
-      // send data to the main board
-      String message = String(masterStrength) + "," + String(slave1Val) + "," + String(slave2Val);
-//      Serial2.println(message);
-      Serial2.write(masterStrength);
-      Serial2.write(slave1Val);
-      Serial2.write(slave2Val);
-      Serial.println();
-      Serial.println(message);
-      Serial.println();
-//      delay(600-140);
-
-    } else {
-      Serial.println("noWifi");
-      Serial2.write(0);
-      Serial2.write(0);
-      Serial2.write(0);
-//      delay(200);
-    }
-
-    lastReadMillis = millis();
-
+  if(Serial2.available()){
+//    Serial.print("requested: ");
+    bool stuff = Serial2.read();
+    Serial.println("requested:");
+    sendInfo();
   }
-
 }
+
+void getMasterStrength() {
+  int m = getStrength(7);
+  Serial.println(m);
+  Serial2.write(m);
+}
+
+void getSlaveStrength(int slave) {
+  int s = 0;
+  WireSlaveRequest slaveReq(Wire, slave, MAX_SLAVE_RESPONSE_LENGTH);
+  slaveReq.setRetryDelay(5);
+  bool success = slaveReq.request();
+  if (success) {
+        /*
+           loop through all but the last byte
+           receive each byte as a character
+           print the character
+        */
+        while (slaveReq.available() > 1) {
+          char c = slaveReq.read();
+//          Serial.print(c);
+        }
+        // receive the byte as an integer
+        s = slaveReq.read();
+        // print the strength of slave 1's wifi connection
+//        Serial.print("Slave1: ");
+//        Serial.print(slave1Val);
+      } else {
+        // notify if connection was not available
+        Serial.print("slave not found: ");
+        Serial.println(slave);
+      }
+  Serial.println(s);
+  Serial2.write(s);
+}
+
+
+void sendInfo() {
+  getMasterStrength();
+  getSlaveStrength(I2C_SLAVE1_ADDR);
+  getSlaveStrength(I2C_SLAVE2_ADDR);
+}
+
+//    int masterStrength = 0;
+//    int slave1Val = 0;
+//    int slave2Val = 0;
+//
+//    // In each loop, make sure there is an Internet connection.
+//    if (WiFi.status() == WL_CONNECTED) {
+//
+//
+//
+//      // optional: set delay in milliseconds between retry attempts.
+//      // the default value is 10 ms
+//      slaveReq1.setRetryDelay(5);
+//      slaveReq2.setRetryDelay(5);
+//
+//      // attempts to read a packet from the ESP32 slaves
+//      bool success1 = slaveReq1.request();
+//      bool success2 = slaveReq2.request();
+//
+//      // print the success of the previous step (for debugging, can be removed later)
+////      Serial.print(success1);
+////      Serial.print(success2);
+//
+//
+//      if (success1) {
+//
+//        /*
+//           loop through all but the last byte
+//           receive each byte as a character
+//           print the character
+//        */
+//        while (slaveReq1.available() > 1) {
+//
+//          char c = slaveReq1.read();
+////          Serial.print(c);
+//
+//        }
+//
+//        // receive the byte as an integer
+//        slave1Val = slaveReq1.read();
+//
+//        // print the strength of slave 1's wifi connection
+////        Serial.print("Slave1: ");
+////        Serial.print(slave1Val);
+//
+//      } else {
+//
+//        // notify if connection was not available
+//        Serial.println("slave1 not found");
+//
+//      }
+//
+//      if (success2) {
+//
+//        /*
+//           loop through all but the last byte
+//           receive each byte as a character
+//           print the character
+//        */
+//        while (1 < slaveReq2.available()) {
+//
+//          char c = slaveReq2.read();
+////          Serial.print(c);
+//
+//        }
+//
+//        // receive the byte as an integer
+//        slave2Val = slaveReq2.read();
+//
+//        // print the strength of slave 2's wifi connection
+////        Serial.print("Slave2: ");
+////        Serial.print(slave2Val);
+//
+//      } else {
+//
+//        // notify if connection was not available
+//        Serial.println("slave2 not found");
+//
+//      }
+//
+//      // print the strength of the master's wifi connection
+////      Serial.print("Master: ");
+//      masterStrength = getStrength(7);
+////      Serial.println(masterStrength);
+//
+//      // send data to the main board
+////      Serial2.println(message);
+//      Serial2.write(masterStrength);
+//      Serial2.write(slave1Val);
+//      Serial2.write(slave2Val);
+//      Serial.println();
+//      Serial.print(masterStrength);
+////      Serial.print(",");
+////      Serial.print(slave1Val);
+////      Serial.print(",");
+////      Serial.println(slave2Val);
+////      delay(600-140);
+//
+//    } else {
+//      Serial.println("noWifi");
+//      Serial2.write(0);
+//      Serial2.write(0);
+//      Serial2.write(0);
+////      delay(200);
+//    }
+//
+//}

@@ -16,6 +16,8 @@ const byte LIDAR_INTERRUPT_PIN = 2;
    Constants
 */
 const int motorDuration = 500;
+const int minDist = 30;
+const int maxDist = 50;
 
 /*
    timeUnit will be used to turn the robot off
@@ -57,8 +59,11 @@ void setup() {
 }
 
 void loop() {
+//  Serial.println("loop begun");
+  Serial2.write(true);
+  Serial.println("Request sent");
   action(readInput());
-//  delay(200);
+  delay(200);
 }
 
 int *readInput() {
@@ -80,15 +85,11 @@ void action(int input[]) {
     int s1 = input[1];
     int s2 = input[2];
 
-  Serial.println("Values: ");
+//  Serial.println("Values: ");
   Serial.println(m);
   Serial.println(s1);
   Serial.println(s2);
 
-
-  Serial.println();
-      Serial.println("forward");
-      Serial.println();
   forward(m);
 
   // below code should compute turns and stuff
@@ -131,27 +132,22 @@ void rotate(boolean direc) {
 
 // moves the bot forward
 void forward(int power) {
-
-  int minDist = 30;
-  int maxDist = 50;
-
   int usedPower = power;
   if (power > maxDist) {
     usedPower = maxDist;
-  } else if (power < minDist) {
+  }
+  if (power < minDist) {
     usedPower = minDist;
   }
-  Serial.println(power);
-//  int speedInt = map(power, minDist, maxDist, 0, 100); // map power to 0-100
-  int speedInt = (minDist-usedPower)*5;
-  runMotors(-speedInt, -speedInt, motorDuration);
+  usedPower = (minDist-usedPower)*(100/maxDist-minDist);
+  runMotors(usedPower, usedPower, motorDuration);
 }
 
 // runs both motors for duration then stops
 void runMotors(int l, int r, int duration) {
   motor('R', r);
   motor('L', l);
-  delay(200);
+  delay(20);
 //  delay(duration);
 //  motor('R', 0);
 //  motor('L', 0);
@@ -161,22 +157,24 @@ void runMotors(int l, int r, int duration) {
 void motor(char side, float value) {
   int pwmOutput = map(abs(value), 0 , 100, 0, 255); // map value from 0 to 255 //TODO: change 1023 to actual useful value
   if (side == 'R') {
+    Serial.print("MOTOR_R = ");
     if (value > 0) {
       digitalWrite(MOTOR_R_DIRECTION_PIN, HIGH);
     } else if (value < 0) {
       digitalWrite(MOTOR_R_DIRECTION_PIN, LOW);
+      Serial.print("-");
     }
     analogWrite(MOTOR_R_PWM_PIN, pwmOutput);
-    Serial.print("MOTOR_R = ");
     Serial.println(pwmOutput);
   } else if (side == 'L') {
+    Serial.print("MOTOR_L = ");
     if (value > 0) {
       digitalWrite(MOTOR_L_DIRECTION_PIN, HIGH);
     } else if (value < 0) {
-      digitalWrite(MOTOR_R_DIRECTION_PIN, HIGH);
+      digitalWrite(MOTOR_L_DIRECTION_PIN, LOW);
+      Serial.print("-");
     }
     analogWrite(MOTOR_L_PWM_PIN, pwmOutput);
-    Serial.print("MOTOR_L = ");
     Serial.println(pwmOutput);
   } else {
     Serial.println("/*ERROR*/  Function motor() invalid char: side");
