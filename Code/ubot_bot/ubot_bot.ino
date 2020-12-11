@@ -90,34 +90,32 @@ void action(int input[]) {
   Serial.println(s1);
   Serial.println(s2);
 
-  forward(m);
-
-  // below code should compute turns and stuff
   
-//  int backPower = ((s1 + s2) / 2);
-//  if (m >= backPower) {
-//    if (s1 > (s1+s2)/2) {
-//      Serial.println();
-//      Serial.println("turn false");
-//      Serial.println();
-//      rotate(false);
-//    } else if ((s1+s2)/2 < s2) {
-//      Serial.println();
-//      Serial.println("turn true");
-//      Serial.println();
-//      rotate(true);
-//    } else {
-//      Serial.println();
-//      Serial.println("forward");
-//      Serial.println();
-//      forward(m);
-//    }
-//  } else {
-//    Serial.println();
-//      Serial.println("turn true");
-//      Serial.println();
-//    rotate(true);
-//  }
+  // decide whether to go forward or turn
+  int backPower = ((s1 + s2) / 2);
+  if (m >= backPower) {
+    if (s1 > (s1+s2)/2) {
+      Serial.println();
+      Serial.println("turn false");
+      Serial.println();
+      rotate(false);
+    } else if ((s1+s2)/2 < s2) {
+      Serial.println();
+      Serial.println("turn true");
+      Serial.println();
+      rotate(true);
+    } else {
+      Serial.println();
+      Serial.println("forward");
+      Serial.println();
+      forward(m);
+    }
+  } else {
+    Serial.println();
+      Serial.println("turn true");
+      Serial.println();
+    rotate(true);
+  }
 
 }
 
